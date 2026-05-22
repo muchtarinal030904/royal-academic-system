@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Royal Academic Document System')</title>
+    <!-- Favicon / Website Icon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-univ.png') }}">
+
+    <title>@yield('title', 'Cetak Ijazah - Universitas Royal')</title>
 
     <!-- Meta Tags for SEO & Professional Styling -->
     <meta name="description" content="Sistem Manajemen Pencetakan Ijazah Modern Universitas Royal">
@@ -46,7 +49,7 @@
         @php
             $logoPath = \App\Models\SystemSetting::get('logo_path');
             $logoUrl = ($logoPath && file_exists(public_path($logoPath))) ? asset($logoPath) : asset('images/logo-univ.png');
-            $univName = \App\Models\SystemSetting::get('university_name', 'Universitas Royal');
+            $univName = \App\Models\SystemSetting::get('university_name', \App\Models\SystemSetting::get('institution_name', 'Universitas Royal'));
             $userRole = Auth::user()->role ?? 'admin';
         @endphp
         <div class="flex items-center h-20 border-b border-slate-800 bg-slate-950 transition-all duration-300" :class="(sidebarCollapsed && !sidebarHovered && isDesktop) ? 'px-4 justify-center' : 'px-6 justify-between'">
@@ -57,7 +60,7 @@
                 <div :class="(sidebarCollapsed && !sidebarHovered && isDesktop) ? 'hidden' : 'ml-3'" class="transition-all duration-300">
                     <h1 class="text-sm font-bold text-white tracking-wide uppercase truncate max-w-[150px] leading-tight">{{ $univName }}</h1>
                     <span class="text-[10px] font-semibold text-gold-500 uppercase tracking-widest block -mt-0.5">
-                        {{ $userRole === 'mahasiswa' ? 'PORTAL IJAZAH' : 'ACADEMIC DOCUMENT SYSTEM' }}
+                        CETAK IJAZAH
                     </span>
                 </div>
             </a>

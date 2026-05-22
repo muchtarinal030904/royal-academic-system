@@ -1,12 +1,12 @@
 @extends('layouts.guest')
 
-@section('title', 'Login - Royal Academic Print Suite')
+@section('title', 'Login - Cetak Ijazah Universitas Royal')
 
 @section('content')
 @php
     $logoPath = \App\Models\SystemSetting::get('logo_path');
     $logoUrl = ($logoPath && file_exists(public_path($logoPath))) ? asset($logoPath) : asset('images/logo-univ.png');
-    $univName = \App\Models\SystemSetting::get('university_name', 'Universitas Royal');
+    $univName = \App\Models\SystemSetting::get('university_name', \App\Models\SystemSetting::get('institution_name', 'Universitas Royal'));
 @endphp
 
 <div class="min-h-screen flex">
@@ -34,7 +34,7 @@
                     </div>
                     <div>
                         <h2 class="text-lg font-extrabold text-slate-950 uppercase tracking-wide leading-tight">{{ $univName }}</h2>
-                        <span class="text-xs font-semibold text-gold-600 uppercase tracking-widest block">Academic Document System</span>
+                        <span class="text-xs font-semibold text-gold-600 uppercase tracking-widest block">Cetak Ijazah</span>
                     </div>
                 </div>
 
