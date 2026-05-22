@@ -31,4 +31,7 @@
     --color-gold-700: #a16207;
     --color-gold-800: #854d0e;
     --color-gold-900: #713f12;
+
+    --font-size-xxs: 0.625rem;
+    --blur-xs: 2px;
 }

@@ -20,12 +20,12 @@ class PrintHistoryController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('certificate_number', 'like', "%{$search}%")
-                  ->orWhereHas('student', function ($sq) use ($search) {
-                      $sq->where('nim', 'like', "%{$search}%")
-                        ->orWhereHas('user', function ($uq) use ($search) {
-                            $uq->where('name', 'like', "%{$search}%");
-                        });
-                  });
+                    ->orWhereHas('student', function ($sq) use ($search) {
+                        $sq->where('nim', 'like', "%{$search}%")
+                            ->orWhereHas('user', function ($uq) use ($search) {
+                                $uq->where('name', 'like', "%{$search}%");
+                            });
+                    });
             });
         }
 

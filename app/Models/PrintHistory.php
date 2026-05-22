@@ -12,11 +12,11 @@ class PrintHistory extends Model
         'certificate_number',
         'printed_at',
         'ip_address',
-        'user_agent'
+        'user_agent',
     ];
 
     protected $casts = [
-        'printed_at' => 'datetime'
+        'printed_at' => 'datetime',
     ];
 
     /**

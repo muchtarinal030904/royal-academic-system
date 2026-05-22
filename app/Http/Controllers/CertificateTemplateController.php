@@ -16,6 +16,7 @@ class CertificateTemplateController extends Controller
     public function index()
     {
         $templates = CertificateTemplate::latest()->get();
+
         return view('admin.templates', compact('templates'));
     }
 
@@ -37,22 +38,22 @@ class CertificateTemplateController extends Controller
 
         try {
             $file = $request->file('background');
-            $fileName = 'tpl_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            
+            $fileName = 'tpl_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+
             // Simpan langsung ke public/templates agar mudah diakses asset()
             $destinationPath = public_path('templates');
-            if (!File::exists($destinationPath)) {
+            if (! File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0755, true);
             }
-            
+
             $file->move($destinationPath, $fileName);
-            $backgroundPath = 'templates/' . $fileName;
+            $backgroundPath = 'templates/'.$fileName;
 
             // Buat record baru
             $template = CertificateTemplate::create([
                 'name' => $request->name,
                 'background_path' => $backgroundPath,
-                'is_active' => CertificateTemplate::count() === 0 // Otomatis aktif jika ini template pertama
+                'is_active' => CertificateTemplate::count() === 0, // Otomatis aktif jika ini template pertama
             ]);
 
             // Log template creation
@@ -60,7 +61,7 @@ class CertificateTemplateController extends Controller
 
             return back()->with('success', "Template '{$template->name}' berhasil ditambahkan!");
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal mengunggah template: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengunggah template: '.$e->getMessage());
         }
     }
 
@@ -73,7 +74,7 @@ class CertificateTemplateController extends Controller
             DB::transaction(function () use ($template) {
                 // Nonaktifkan semua template
                 CertificateTemplate::query()->update(['is_active' => false]);
-                
+
                 // Aktifkan template terpilih
                 $template->update(['is_active' => true]);
             });
@@ -83,7 +84,7 @@ class CertificateTemplateController extends Controller
 
             return back()->with('success', "Template '{$template->name}' sekarang aktif sebagai template utama!");
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal mengaktifkan template: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengaktifkan template: '.$e->getMessage());
         }
     }
 
@@ -93,12 +94,12 @@ class CertificateTemplateController extends Controller
     public function updateConfig(Request $request, CertificateTemplate $template)
     {
         $request->validate([
-            'fields_config' => ['required', 'array']
+            'fields_config' => ['required', 'array'],
         ]);
 
         try {
             $template->update([
-                'fields_config' => $request->fields_config
+                'fields_config' => $request->fields_config,
             ]);
 
             // Log template visual editor configuration update
@@ -106,12 +107,12 @@ class CertificateTemplateController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Konfigurasi tata letak elemen ijazah berhasil disimpan!'
+                'message' => 'Konfigurasi tata letak elemen ijazah berhasil disimpan!',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menyimpan konfigurasi: ' . $e->getMessage()
+                'message' => 'Gagal menyimpan konfigurasi: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -123,7 +124,7 @@ class CertificateTemplateController extends Controller
     {
         try {
             $filePath = public_path($template->background_path);
-            
+
             // Hapus berkas fisik jika ada
             if (File::exists($filePath)) {
                 File::delete($filePath);
@@ -145,7 +146,7 @@ class CertificateTemplateController extends Controller
 
             return back()->with('success', "Template '{$name}' berhasil dihapus secara permanen.");
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menghapus template: ' . $e->getMessage());
+            return back()->with('error', 'Gagal menghapus template: '.$e->getMessage());
         }
     }
 }

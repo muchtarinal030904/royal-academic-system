@@ -13,12 +13,12 @@ class CertificateTemplate extends Model
         'canvas_height',
         'font_family',
         'fields_config',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
         'fields_config' => 'array',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     /**
@@ -54,7 +54,7 @@ class CertificateTemplate extends Model
                 'font_weight' => 'normal',
                 'text_align' => 'center',
                 'color' => '#64748b',
-                'is_visible' => true
+                'is_visible' => true,
             ],
             'name' => [
                 'top' => 38,
@@ -63,7 +63,7 @@ class CertificateTemplate extends Model
                 'font_weight' => 'bold',
                 'text_align' => 'center',
                 'color' => '#1d4ed8', // Brand Primary
-                'is_visible' => true
+                'is_visible' => true,
             ],
             'nim' => [
                 'top' => 45,
@@ -72,7 +72,7 @@ class CertificateTemplate extends Model
                 'font_weight' => 'normal',
                 'text_align' => 'center',
                 'color' => '#475569',
-                'is_visible' => true
+                'is_visible' => true,
             ],
             'faculty' => [
                 'top' => 53,
@@ -81,7 +81,7 @@ class CertificateTemplate extends Model
                 'font_weight' => 'normal',
                 'text_align' => 'center',
                 'color' => '#475569',
-                'is_visible' => true
+                'is_visible' => true,
             ],
             'major' => [
                 'top' => 59,
@@ -90,7 +90,7 @@ class CertificateTemplate extends Model
                 'font_weight' => 'bold',
                 'text_align' => 'center',
                 'color' => '#0f172a',
-                'is_visible' => true
+                'is_visible' => true,
             ],
             'degree' => [
                 'top' => 65,
@@ -99,7 +99,7 @@ class CertificateTemplate extends Model
                 'font_weight' => 'bold',
                 'text_align' => 'center',
                 'color' => '#0f172a',
-                'is_visible' => true
+                'is_visible' => true,
             ],
             'graduation_date' => [
                 'top' => 72,
@@ -108,14 +108,14 @@ class CertificateTemplate extends Model
                 'font_weight' => 'normal',
                 'text_align' => 'center',
                 'color' => '#0f172a',
-                'is_visible' => true
+                'is_visible' => true,
             ],
             'qr_code' => [
                 'top' => 78,
                 'left' => 80,
                 'size' => 80,
-                'is_visible' => true
-            ]
+                'is_visible' => true,
+            ],
         ];
     }
 }

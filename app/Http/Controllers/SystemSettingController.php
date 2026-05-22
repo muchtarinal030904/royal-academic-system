@@ -29,7 +29,7 @@ class SystemSettingController extends Controller
             'dean_name' => ['required', 'string', 'max:255'],
             'dean_nip' => ['required', 'string', 'max:100'],
             'log_retention_days' => ['required', 'integer', 'min:7', 'max:365'],
-            'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg', 'max:2048'] // Max 2MB
+            'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg', 'max:2048'], // Max 2MB
         ], [
             'institution_name.required' => 'Nama institusi wajib diisi.',
             'rector_name.required' => 'Nama rektor wajib diisi.',
@@ -41,7 +41,7 @@ class SystemSettingController extends Controller
             'log_retention_days.max' => 'Batas hari retensi maksimal adalah 365 hari.',
             'logo.image' => 'File logo harus berupa gambar.',
             'logo.mimes' => 'Format logo harus PNG, JPG, atau JPEG.',
-            'logo.max' => 'Ukuran logo maksimal adalah 2MB.'
+            'logo.max' => 'Ukuran logo maksimal adalah 2MB.',
         ]);
 
         try {
@@ -56,10 +56,10 @@ class SystemSettingController extends Controller
             // Simpan pengunggahan berkas logo jika ada
             if ($request->hasFile('logo')) {
                 $file = $request->file('logo');
-                $fileName = 'logo_univ_' . time() . '.' . $file->getClientOriginalExtension();
-                
+                $fileName = 'logo_univ_'.time().'.'.$file->getClientOriginalExtension();
+
                 $destinationPath = public_path('images');
-                if (!File::exists($destinationPath)) {
+                if (! File::exists($destinationPath)) {
                     File::makeDirectory($destinationPath, 0755, true);
                 }
 
@@ -70,7 +70,7 @@ class SystemSettingController extends Controller
                 }
 
                 $file->move($destinationPath, $fileName);
-                SystemSetting::set('logo_path', 'images/' . $fileName);
+                SystemSetting::set('logo_path', 'images/'.$fileName);
             }
 
             // Catat ke log audit
@@ -78,7 +78,7 @@ class SystemSettingController extends Controller
 
             return back()->with('success', 'Konfigurasi pengaturan sistem berhasil diperbarui!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal memperbarui pengaturan: ' . $e->getMessage());
+            return back()->with('error', 'Gagal memperbarui pengaturan: '.$e->getMessage());
         }
     }
 }

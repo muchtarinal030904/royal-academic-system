@@ -58,7 +58,7 @@
                                id="username" 
                                value="{{ old('username') }}"
                                placeholder="Masukkan NIM / ID Akademik"
-                               class="block w-full pl-11 pr-4 py-3.5 border @error('username') border-red-300 bg-red-50/20 focus:ring-red-500/10 focus:border-red-500 @else border-slate-200 bg-slate-50/50 focus:ring-royal-500/10 focus:border-royal-500 @enderror rounded-xl text-slate-900 text-sm focus:outline-hidden focus:ring-4 transition-all"
+                               class="block w-full pl-11 pr-4 py-3.5 border rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-4 transition-all {{ $errors->has('username') ? 'border-red-300 bg-red-50/20 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:ring-royal-500/10 focus:border-royal-500' }}"
                                required 
                                autofocus>
                     </div>
@@ -83,7 +83,7 @@
                                name="password" 
                                id="password" 
                                placeholder="Masukkan kata sandi"
-                               class="block w-full pl-11 pr-4 py-3.5 border @error('password') border-red-300 bg-red-50/20 focus:ring-red-500/10 focus:border-red-500 @else border-slate-200 bg-slate-50/50 focus:ring-royal-500/10 focus:border-royal-500 @enderror rounded-xl text-slate-900 text-sm focus:outline-hidden focus:ring-4 transition-all"
+                               class="block w-full pl-11 pr-4 py-3.5 border rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-4 transition-all {{ $errors->has('password') ? 'border-red-300 bg-red-50/20 focus:ring-red-500/10 focus:border-red-500' : 'border-slate-200 bg-slate-50/50 focus:ring-royal-500/10 focus:border-royal-500' }}"
                                required>
                     </div>
                     @error('password')
@@ -115,7 +115,7 @@
                 <!-- Submit Button -->
                 <div>
                     <button type="submit" 
-                            class="w-full flex justify-center items-center py-4 px-5 border border-transparent rounded-xl text-sm font-bold text-white bg-royal-600 hover:bg-royal-700 focus:outline-hidden focus:ring-4 focus:ring-royal-500/30 active:scale-[0.98] shadow-lg shadow-royal-600/10 hover:shadow-royal-700/20 transition-all duration-200">
+                            class="group w-full flex justify-center items-center py-4 px-5 border border-transparent rounded-xl text-sm font-bold text-white bg-royal-600 hover:bg-royal-700 focus:outline-none focus:ring-4 focus:ring-royal-500/30 active:scale-[0.98] shadow-lg shadow-royal-600/10 hover:shadow-royal-700/20 transition-all duration-200">
                         Masuk ke Akun
                         <i data-lucide="arrow-right" class="w-4 h-4 ml-2 transition-transform duration-200 group-hover:translate-x-1"></i>
                     </button>
@@ -142,7 +142,7 @@
     <div class="hidden lg:block lg:w-7/12 relative bg-slate-950 overflow-hidden">
         
         <!-- High-quality university academic building image -->
-        <img class="absolute inset-0 w-full h-full object-cover opacity-60 scale-105 hover:scale-100 transition-transform duration-10000 ease-out" 
+        <img class="absolute inset-0 w-full h-full object-cover opacity-60 scale-105 hover:scale-100 transition-transform duration-[10000ms] ease-out" 
              src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1200" 
              alt="Universitas Royal Campus">
         

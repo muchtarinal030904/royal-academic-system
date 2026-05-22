@@ -21,7 +21,7 @@ class ActivityLogController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('description', 'like', "%{$search}%")
-                  ->orWhere('username', 'like', "%{$search}%");
+                    ->orWhere('username', 'like', "%{$search}%");
             });
         }
 
@@ -44,7 +44,7 @@ class ActivityLogController extends Controller
     public function purge(Request $request)
     {
         $request->validate([
-            'retention_days' => ['required', 'integer', 'min:0']
+            'retention_days' => ['required', 'integer', 'min:0'],
         ]);
 
         try {
@@ -54,7 +54,7 @@ class ActivityLogController extends Controller
                 // Hapus semua log
                 $count = ActivityLog::count();
                 ActivityLog::truncate();
-                
+
                 // Catat aktivitas pembersihan log sebagai satu-satunya log awal baru
                 AuditLogService::log('PURGE_LOGS', "Membersihkan seluruh log aktivitas keamanan sebanyak {$count} baris secara permanen.");
             } else {
@@ -67,7 +67,7 @@ class ActivityLogController extends Controller
 
             return back()->with('success', "Berhasil membersihkan {$count} baris log audit secara permanen.");
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal membersihkan log audit: ' . $e->getMessage());
+            return back()->with('error', 'Gagal membersihkan log audit: '.$e->getMessage());
         }
     }
 }

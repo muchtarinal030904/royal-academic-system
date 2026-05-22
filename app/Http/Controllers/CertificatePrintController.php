@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
 use App\Models\CertificateTemplate;
 use App\Models\PrintHistory;
+use App\Models\Student;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +18,7 @@ class CertificatePrintController extends Controller
     public function index(Request $request)
     {
         $activeTemplate = CertificateTemplate::active()->first();
-        
+
         // Mulai query mahasiswa lulus (status: Lulus)
         $query = Student::with('user')->where('status', 'Lulus');
 
@@ -27,9 +27,9 @@ class CertificatePrintController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('nim', 'like', "%{$search}%")
-                  ->orWhereHas('user', function ($uq) use ($search) {
-                      $uq->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('user', function ($uq) use ($search) {
+                        $uq->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -44,7 +44,7 @@ class CertificatePrintController extends Controller
         }
 
         $students = $query->latest()->paginate(15)->withQueryString();
-        
+
         // List Program Studi untuk filter dropdown
         $majors = Student::distinct()->where('status', 'Lulus')->pluck('major');
 
@@ -57,8 +57,8 @@ class CertificatePrintController extends Controller
     public function preview(Student $student)
     {
         $activeTemplate = CertificateTemplate::active()->first();
-        
-        if (!$activeTemplate) {
+
+        if (! $activeTemplate) {
             return redirect()->route('admin.print')->with('error', 'Belum ada template ijazah aktif yang dikonfigurasi. Silakan aktifkan template terlebih dahulu.');
         }
 
@@ -79,8 +79,8 @@ class CertificatePrintController extends Controller
     public function printBatch(Request $request)
     {
         $activeTemplate = CertificateTemplate::active()->first();
-        
-        if (!$activeTemplate) {
+
+        if (! $activeTemplate) {
             return redirect()->route('admin.print')->with('error', 'Belum ada template ijazah aktif yang dikonfigurasi. Silakan aktifkan template terlebih dahulu.');
         }
 
@@ -111,7 +111,7 @@ class CertificatePrintController extends Controller
     {
         $request->validate([
             'student_ids' => ['required', 'array'],
-            'student_ids.*' => ['integer', 'exists:students,id']
+            'student_ids.*' => ['integer', 'exists:students,id'],
         ]);
 
         try {
@@ -121,7 +121,7 @@ class CertificatePrintController extends Controller
             DB::transaction(function () use ($students, $request) {
                 // Perbarui status pencetakan
                 Student::whereIn('id', $request->student_ids)->update([
-                    'certificate_status' => 'Sudah Cetak'
+                    'certificate_status' => 'Sudah Cetak',
                 ]);
 
                 $user = Auth::user();
@@ -136,24 +136,24 @@ class CertificatePrintController extends Controller
                         'certificate_number' => $st->certificate_number ?: 'BELUM TERBIT',
                         'printed_at' => now(),
                         'ip_address' => $ip,
-                        'user_agent' => $ua
+                        'user_agent' => $ua,
                     ]);
 
                     AuditLogService::log(
                         'PRINT_CERTIFICATE',
-                        "Mencetak ijazah resmi milik mahasiswa: " . ($st->user->name ?? 'Mahasiswa') . " (NIM: {$st->nim}, No: " . ($st->certificate_number ?: '-') . ")."
+                        'Mencetak ijazah resmi milik mahasiswa: '.($st->user->name ?? 'Mahasiswa')." (NIM: {$st->nim}, No: ".($st->certificate_number ?: '-').').'
                     );
                 }
             });
 
             return response()->json([
                 'success' => true,
-                'message' => 'Berhasil memperbarui status pencetakan untuk ' . $students->count() . ' ijazah mahasiswa!'
+                'message' => 'Berhasil memperbarui status pencetakan untuk '.$students->count().' ijazah mahasiswa!',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal memperbarui status: ' . $e->getMessage()
+                'message' => 'Gagal memperbarui status: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -165,8 +165,8 @@ class CertificatePrintController extends Controller
     {
         $user = Auth::user();
         $student = Student::with('user')->where('user_id', $user->id)->first();
-        
-        if (!$student) {
+
+        if (! $student) {
             abort(404, 'Data akademik mahasiswa Anda tidak ditemukan.');
         }
 
@@ -176,7 +176,7 @@ class CertificatePrintController extends Controller
         }
 
         $activeTemplate = CertificateTemplate::active()->first();
-        if (!$activeTemplate) {
+        if (! $activeTemplate) {
             return redirect()->route('student.dashboard')->with('error', 'Sistem tidak mendeteksi template ijazah aktif. Silakan hubungi Biro Akademik.');
         }
 

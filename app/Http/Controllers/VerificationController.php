@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
 use App\Models\CertificateTemplate;
-use Illuminate\Http\Request;
+use App\Models\Student;
 
 class VerificationController extends Controller
 {
@@ -26,7 +25,7 @@ class VerificationController extends Controller
         $isValid = false;
         $rejectReason = '';
 
-        if (!$student) {
+        if (! $student) {
             $rejectReason = 'Nomor Induk Mahasiswa (NIM) tidak terdaftar di sistem kami.';
         } elseif ($student->status !== 'Lulus') {
             $rejectReason = 'Mahasiswa yang bersangkutan belum terverifikasi Lulus secara resmi.';

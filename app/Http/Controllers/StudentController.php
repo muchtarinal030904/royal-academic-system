@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -23,9 +23,9 @@ class StudentController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('nim', 'like', "%{$search}%")
-                  ->orWhereHas('user', function ($uq) use ($search) {
-                      $uq->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('user', function ($uq) use ($search) {
+                        $uq->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -65,7 +65,7 @@ class StudentController extends Controller
             'email' => ['nullable', 'email', 'unique:users,email'],
             'major' => ['required', 'string', 'max:255'],
             'faculty' => ['required', 'string', 'max:255'],
-            'admission_year' => ['required', 'integer', 'min:2000', 'max:' . date('Y')],
+            'admission_year' => ['required', 'integer', 'min:2000', 'max:'.date('Y')],
             'gpa' => ['required', 'numeric', 'between:0.00,4.00'],
             'status' => ['required', 'string', Rule::in(['Aktif', 'Lulus', 'Cuti'])],
             'certificate_status' => ['required', 'string', Rule::in(['Belum Cetak', 'Antrean Cetak', 'Sudah Cetak'])],
@@ -86,7 +86,7 @@ class StudentController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'username' => $request->nim,
-                'email' => $request->email ?: $request->nim . '@royal.ac.id',
+                'email' => $request->email ?: $request->nim.'@royal.ac.id',
                 'password' => Hash::make('password'), // default password
                 'role' => 'mahasiswa',
             ]);
@@ -120,7 +120,7 @@ class StudentController extends Controller
             'email' => ['nullable', 'email', Rule::unique('users', 'email')->ignore($student->user_id)],
             'major' => ['required', 'string', 'max:255'],
             'faculty' => ['required', 'string', 'max:255'],
-            'admission_year' => ['required', 'integer', 'min:2000', 'max:' . date('Y')],
+            'admission_year' => ['required', 'integer', 'min:2000', 'max:'.date('Y')],
             'gpa' => ['required', 'numeric', 'between:0.00,4.00'],
             'status' => ['required', 'string', Rule::in(['Aktif', 'Lulus', 'Cuti'])],
             'certificate_status' => ['required', 'string', Rule::in(['Belum Cetak', 'Antrean Cetak', 'Sudah Cetak'])],
@@ -133,7 +133,7 @@ class StudentController extends Controller
             // 1. Perbarui akun User terkait
             $student->user->update([
                 'name' => $request->name,
-                'email' => $request->email ?: $student->nim . '@royal.ac.id',
+                'email' => $request->email ?: $student->nim.'@royal.ac.id',
             ]);
 
             // 2. Perbarui detail akademik Student
@@ -183,29 +183,31 @@ class StudentController extends Controller
         $file = $request->file('csv_file');
         $handle = fopen($file->getRealPath(), 'r');
 
-        if (!$handle) {
+        if (! $handle) {
             return back()->with('error', 'Gagal membuka file CSV.');
         }
 
         // Ambil header kolom
         $header = fgetcsv($handle, 1000, ',');
-        
-        if (!$header) {
+
+        if (! $header) {
             fclose($handle);
+
             return back()->with('error', 'File CSV kosong.');
         }
 
         // Bersihkan spasi atau karakter aneh dari header
-        $header = array_map(function($h) {
+        $header = array_map(function ($h) {
             return strtolower(trim($h, "\xEF\xBB\xBF "));
         }, $header);
 
         // Header yang dibutuhkan: nim, nama, program_studi, fakultas, tahun_masuk, ipk, status_mahasiswa, status_ijazah, nomor_ijazah, tanggal_lulus, gelar
         $requiredHeaders = ['nim', 'nama', 'program_studi', 'fakultas', 'tahun_masuk', 'ipk'];
-        
+
         foreach ($requiredHeaders as $req) {
-            if (!in_array($req, $header)) {
+            if (! in_array($req, $header)) {
                 fclose($handle);
+
                 return back()->with('error', "Format header CSV tidak valid. Kolom '{$req}' wajib ada.");
             }
         }
@@ -219,7 +221,7 @@ class StudentController extends Controller
         try {
             while (($row = fgetcsv($handle, 1000, ',')) !== false) {
                 $rowNumber++;
-                
+
                 // Lewati baris kosong
                 if (count($row) === 1 && empty($row[0])) {
                     continue;
@@ -228,8 +230,9 @@ class StudentController extends Controller
                 // Asosiasikan baris dengan header
                 $data = array_combine($header, $row);
 
-                if (!$data) {
+                if (! $data) {
                     $errors[] = "Baris {$rowNumber}: Jumlah kolom tidak cocok dengan header.";
+
                     continue;
                 }
 
@@ -240,7 +243,7 @@ class StudentController extends Controller
                 $faculty = trim($data['fakultas'] ?? '');
                 $admissionYear = intval(trim($data['tahun_masuk'] ?? 0));
                 $gpa = floatval(trim($data['ipk'] ?? 0));
-                
+
                 // Kolom opsional dengan default
                 $status = trim($data['status_mahasiswa'] ?? 'Aktif') ?: 'Aktif';
                 $certificateStatus = trim($data['status_ijazah'] ?? 'Belum Cetak') ?: 'Belum Cetak';
@@ -249,30 +252,35 @@ class StudentController extends Controller
                 $degree = trim($data['gelar'] ?? '') ?: null;
 
                 // VALIDASI BARIS
-                if (empty($nim) || empty($name) || empty($major) || empty($faculty) || !$admissionYear || !$gpa) {
+                if (empty($nim) || empty($name) || empty($major) || empty($faculty) || ! $admissionYear || ! $gpa) {
                     $errors[] = "Baris {$rowNumber}: Kolom wajib (NIM, Nama, Prodi, Fakultas, Tahun Masuk, IPK) tidak boleh kosong.";
+
                     continue;
                 }
 
-                if (!preg_match('/^[0-9]+$/', $nim)) {
+                if (! preg_match('/^[0-9]+$/', $nim)) {
                     $errors[] = "Baris {$rowNumber}: NIM '{$nim}' harus berupa angka.";
+
                     continue;
                 }
 
                 if ($gpa < 0 || $gpa > 4.00) {
                     $errors[] = "Baris {$rowNumber}: IPK '{$gpa}' harus berada di antara 0.00 dan 4.00.";
+
                     continue;
                 }
 
                 // Periksa keunikan NIM di DB
                 if (User::where('username', $nim)->exists() || Student::where('nim', $nim)->exists()) {
                     $errors[] = "Baris {$rowNumber}: NIM '{$nim}' sudah terdaftar dalam sistem.";
+
                     continue;
                 }
 
                 // Periksa keunikan nomor ijazah jika diisi
                 if ($certificateNumber && Student::where('certificate_number', $certificateNumber)->exists()) {
                     $errors[] = "Baris {$rowNumber}: Nomor Ijazah '{$certificateNumber}' sudah digunakan mahasiswa lain.";
+
                     continue;
                 }
 
@@ -280,7 +288,7 @@ class StudentController extends Controller
                 $user = User::create([
                     'name' => $name,
                     'username' => $nim,
-                    'email' => $nim . '@royal.ac.id',
+                    'email' => $nim.'@royal.ac.id',
                     'password' => Hash::make('password'),
                     'role' => 'mahasiswa',
                 ]);
@@ -307,16 +315,19 @@ class StudentController extends Controller
             if (count($errors) > 0) {
                 // Rollback transaksi jika ada error untuk mencegah data setengah diimpor
                 DB::rollBack();
+
                 return back()->with('import_errors', $errors)->with('error', 'Gagal mengimpor file CSV karena ditemukan beberapa kesalahan validasi data.');
             }
 
             DB::commit();
+
             return back()->with('success', "Berhasil mengimpor {$successCount} data mahasiswa secara massal!");
 
         } catch (\Exception $e) {
             DB::rollBack();
             fclose($handle);
-            return back()->with('error', 'Terjadi kesalahan sistem saat memproses impor: ' . $e->getMessage());
+
+            return back()->with('error', 'Terjadi kesalahan sistem saat memproses impor: '.$e->getMessage());
         }
     }
 
@@ -330,15 +341,15 @@ class StudentController extends Controller
             'Content-Disposition' => 'attachment; filename="template_mahasiswa_royal.csv"',
             'Pragma' => 'no-cache',
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0'
+            'Expires' => '0',
         ];
 
         $columns = ['nim', 'nama', 'program_studi', 'fakultas', 'tahun_masuk', 'ipk', 'status_mahasiswa', 'status_ijazah', 'nomor_ijazah', 'tanggal_lulus', 'gelar'];
 
-        $callback = function() use ($columns) {
+        $callback = function () use ($columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
-            
+
             // Tambahkan baris contoh
             fputcsv($file, [
                 '23220465',
@@ -351,9 +362,9 @@ class StudentController extends Controller
                 'Belum Cetak',
                 '105/UNROY/SI/S1/2027',
                 '2027-08-25',
-                'S.Kom.'
+                'S.Kom.',
             ]);
-            
+
             fclose($file);
         };
 

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
-
-use App\Services\AuditLogService;
 
 class ProfileController extends Controller
 {

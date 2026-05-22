@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CertificateTemplateController;
-use App\Http\Controllers\CertificatePrintController;
-use App\Http\Controllers\VerificationController;
-use App\Http\Controllers\PrintHistoryController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CertificatePrintController;
+use App\Http\Controllers\CertificateTemplateController;
+use App\Http\Controllers\PrintHistoryController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SystemSettingController;
+use App\Http\Controllers\VerificationController;
+use App\Models\Student;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 // Guest Routes (Only accessible when not logged in)
@@ -19,7 +21,7 @@ Route::middleware('guest')->group(function () {
 
 // Authenticated Routes (Require active login session)
 Route::middleware('auth')->group(function () {
-    
+
     // Logout Action
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -28,14 +30,14 @@ Route::middleware('auth')->group(function () {
 
     // Admin Group Area (Role restricted)
     Route::middleware('role:admin')->prefix('admin')->group(function () {
-        
+
         Route::get('/dashboard', function () {
-            $totalStudents = \App\Models\User::where('role', 'mahasiswa')->count();
-            $printedCertificates = \App\Models\Student::where('certificate_status', 'Sudah Cetak')->count();
-            $queueCertificates = \App\Models\Student::where('certificate_status', 'Antrean Cetak')->count();
-            
+            $totalStudents = User::where('role', 'mahasiswa')->count();
+            $printedCertificates = Student::where('certificate_status', 'Sudah Cetak')->count();
+            $queueCertificates = Student::where('certificate_status', 'Antrean Cetak')->count();
+
             // Dapatkan riwayat aktivitas / pencetakan ijazah terbaru
-            $recentStudents = \App\Models\Student::with('user')->latest()->take(5)->get();
+            $recentStudents = Student::with('user')->latest()->take(5)->get();
 
             return view('admin.dashboard', compact('totalStudents', 'printedCertificates', 'queueCertificates', $recentStudents ? 'recentStudents' : []));
         })->name('admin.dashboard');
@@ -69,7 +71,7 @@ Route::middleware('auth')->group(function () {
 
     // Student Group Area (Role restricted)
     Route::middleware('role:mahasiswa')->prefix('student')->group(function () {
-        
+
         Route::get('/dashboard', function () {
             return view('student.dashboard');
         })->name('student.dashboard');

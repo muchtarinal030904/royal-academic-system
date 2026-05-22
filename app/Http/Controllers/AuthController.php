@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-
-use App\Services\AuditLogService;
 
 class AuthController extends Controller
 {

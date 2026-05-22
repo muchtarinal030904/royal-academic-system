@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
     'certificate_number',
     'graduation_date',
     'degree',
-    'photo'
+    'photo',
 ])]
 class Student extends Model
 {
@@ -58,6 +58,7 @@ class Student extends Model
         } elseif ($this->gpa >= 2.76) {
             return 'Memuaskan';
         }
+
         return 'Cukup';
     }
 }
